@@ -1,0 +1,186 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#101010">
+  <title>FrameFolio | Photography Gallery</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: #f7f6f2;
+      color: #191919;
+      font-family: Arial, sans-serif;
+    }
+    header {
+      padding: 22px 7%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #fff;
+      border-bottom: 1px solid #eee;
+    }
+    .logo { font-size: 23px; font-weight: 800; }
+    .logo span { color: #a67c52; }
+    header a { color: #333; text-decoration: none; font-size: 14px; }
+    .hero {
+      padding: 65px 7% 45px;
+      text-align: center;
+    }
+    .eyebrow {
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: #99754f;
+      font-size: 11px;
+      font-weight: bold;
+    }
+    h1 {
+      font-family: Georgia, serif;
+      font-size: clamp(38px, 6vw, 66px);
+      font-weight: 400;
+      margin: 18px 0;
+    }
+    .hero p { color: #777; line-height: 1.7; }
+    .actions { margin-top: 25px; }
+    button {
+      border: 0;
+      background: #191919;
+      color: white;
+      border-radius: 4px;
+      padding: 13px 20px;
+      cursor: pointer;
+      margin: 5px;
+    }
+    button.secondary { background: white; color: #191919; border: 1px solid #ddd; }
+    .section { padding: 15px 7% 60px; }
+    .section-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 22px;
+    }
+    h2 { font-family: Georgia, serif; font-weight: 400; font-size: 30px; }
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+    .card {
+      background: white;
+      border-radius: 7px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px #00000008;
+    }
+    .card img {
+      display: block;
+      width: 100%;
+      height: 230px;
+      object-fit: cover;
+      background: #ddd;
+    }
+    .card-info { padding: 17px; }
+    .card-info h3 { margin: 0 0 7px; font-size: 17px; }
+    .card-info p { margin: 0; font-size: 13px; color: #777; }
+    .card-info button { margin: 14px 0 0; }
+    footer {
+      padding: 30px 7%;
+      text-align: center;
+      background: #191919;
+      color: #ddd;
+      font-size: 13px;
+      line-height: 1.8;
+    }
+    .note { color: #777; font-size: 12px; margin-top: 20px; }
+    @media (max-width: 700px) {
+      .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+      .card img { height: 160px; }
+      .card-info { padding: 12px; }
+      .card-info h3 { font-size: 15px; }
+      .hero { padding-top: 45px; }
+    }
+    @media (max-width: 380px) {
+      .gallery { grid-template-columns: 1fr; }
+      .card img { height: 220px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">Frame<span>Folio.</span></div>
+    <a href="#galleries">Explore galleries ↗</a>
+  </header>
+
+  <section class="hero">
+    <div class="eyebrow">Every picture tells a story</div>
+    <h1>Your memories,<br>beautifully collected.</h1>
+    <p>A beautiful home for event photography.<br>
+       Explore moments, relive memories, and save your favourites.</p>
+    <div class="actions">
+      <button onclick="document.getElementById('galleries').scrollIntoView({behavior:'smooth'})">
+        Explore Photos ↓
+      </button>
+      <button class="secondary" onclick="showInfo()">For Photographers</button>
+    </div>
+  </section>
+
+  <section class="section" id="galleries">
+    <div class="section-top">
+      <div>
+        <div class="eyebrow">Curated moments</div>
+        <h2>Featured Galleries</h2>
+      </div>
+      <span style="font-size:13px;color:#777">Demo gallery · 3 collections</span>
+    </div>
+
+    <div class="gallery">
+      <article class="card">
+        <img src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80" alt="Wedding celebration">
+        <div class="card-info">
+          <h3>Wedding Stories</h3>
+          <p>Love, laughter & forever</p>
+          <button onclick="openGallery('Wedding Stories')">View collection ↗</button>
+        </div>
+      </article>
+
+      <article class="card">
+        <img src="https://images.unsplash.com/photo-1530103862676-de8c9deBAD1?auto=format&fit=crop&w=800&q=80" alt="Birthday celebration">
+        <div class="card-info">
+          <h3>Birthday Memories</h3>
+          <p>Another year of joy</p>
+          <button onclick="openGallery('Birthday Memories')">View collection ↗</button>
+        </div>
+      </article>
+
+      <article class="card">
+        <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=800&q=80" alt="Special event">
+        <div class="card-info">
+          <h3>Special Moments</h3>
+          <p>The moments worth keeping</p>
+          <button onclick="openGallery('Special Moments')">View collection ↗</button>
+        </div>
+      </article>
+    </div>
+    <p class="note">These are sample collections. Real customer galleries and secure photo access will be added next.</p>
+  </section>
+
+  <footer>
+    <strong>FrameFolio.</strong><br>
+    Moments captured. Memories preserved.<br>
+    © 2026 FrameFolio · Photography Gallery Demo
+  </footer>
+
+  <script>
+    function openGallery(name) {
+      alert(name + "\n\nThis is a demo collection. Individual event galleries will be connected in the next step.");
+    }
+
+    function showInfo() {
+      alert("Photographers: gallery creation, photo uploads, QR sharing and customer access are coming in the next version.");
+    }
+  </script>
+</body>
+</html>
