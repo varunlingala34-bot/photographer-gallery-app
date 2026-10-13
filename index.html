@@ -56,7 +56,7 @@ footer{padding:25px 7%;border-top:1px solid #e8e5df;color:#777;font-size:12px}
 <main>
   <section class="panel" id="loginPanel">
     <h2>Photographer Login</h2>
-    <p class="note">Sign in with the email and password you created in Firebase Authentication.</p>
+    <p class="note">Sign in with your photographer email and password.</p>
     <form id="loginForm">
       <label for="email">Email address</label>
       <input id="email" type="email" autocomplete="username" placeholder="Your email address" required>
@@ -64,7 +64,8 @@ footer{padding:25px 7%;border-top:1px solid #e8e5df;color:#777;font-size:12px}
       <input id="password" type="password" autocomplete="current-password" placeholder="Your password" required>
       <button id="loginBtn" type="submit">Log in</button>
     </form>
-    <div id="loginStatus" role="status"></div>
+    <button id="forgotBtn" class="secondary" type="button">Forgot password?</button>
+    <div id="loginStatus" role="status" aria-live="polite"></div>
   </section>
 
   <section id="adminArea" class="hidden">
@@ -86,7 +87,7 @@ footer{padding:25px 7%;border-top:1px solid #e8e5df;color:#777;font-size:12px}
       <input id="photos" type="file" accept="image/*" multiple>
       <p class="note">Uploads use your Cloudinary unsigned upload preset.</p>
       <button id="uploadBtn" type="button">Upload photos</button>
-      <div id="status" role="status"></div>
+      <div id="status" role="status" aria-live="polite"></div>
     </section>
 
     <div class="section-head">
@@ -104,6 +105,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebas
 import {
   getAuth,
   signInWithEmailAndPassword,
+  sendPasswordResetEmail,
   onAuthStateChanged,
   signOut
 } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
@@ -139,7 +141,10 @@ const adminArea = document.getElementById("adminArea");
 const loginStatus = document.getElementById("loginStatus");
 const status = document.getElementById("status");
 const loginBtn = document.getElementById("loginBtn");
+const forgotBtn = document.getElementById("forgotBtn");
 const uploadBtn = document.getElementById("uploadBtn");
+const emailInput = document.getElementById("email");
+const passwordInput = document.getElementById("password");
 
 document.getElementById("loginForm").addEventListener("submit", async (event) => {
   event.preventDefault();
@@ -149,18 +154,44 @@ document.getElementById("loginForm").addEventListener("submit", async (event) =>
   try {
     await signInWithEmailAndPassword(
       auth,
-      document.getElementById("email").value.trim(),
-      document.getElementById("password").value
+      emailInput.value.trim(),
+      passwordInput.value
     );
     loginStatus.textContent = "";
-    document.getElementById("password").value = "";
+    passwordInput.value = "";
   } catch (error) {
     loginStatus.textContent =
       error.code === "auth/invalid-credential"
         ? "Email or password is incorrect. Please check and try again."
-        : "Login failed: " + error.message;
+        : "Login failed. Please check your connection and Firebase settings.";
+    console.error("Login error:", error.code);
   } finally {
     loginBtn.disabled = false;
+  }
+});
+
+forgotBtn.addEventListener("click", async () => {
+  const email = emailInput.value.trim();
+
+  if (!email || !emailInput.checkValidity()) {
+    loginStatus.textContent = "Enter your registered email address first.";
+    emailInput.focus();
+    return;
+  }
+
+  forgotBtn.disabled = true;
+  loginStatus.textContent = "Sending password reset email...";
+
+  try {
+    await sendPasswordResetEmail(auth, email);
+    loginStatus.textContent =
+      "If this email is registered, a password reset email has been sent. Check your inbox and spam folder.";
+  } catch (error) {
+    loginStatus.textContent =
+      "Could not send the reset email. Check Firebase email settings and authorized domains.";
+    console.error("Password reset error:", error.code);
+  } finally {
+    forgotBtn.disabled = false;
   }
 });
 
@@ -168,7 +199,8 @@ document.getElementById("logoutBtn").addEventListener("click", async () => {
   try {
     await signOut(auth);
   } catch (error) {
-    status.textContent = "Could not log out: " + error.message;
+    status.textContent = "Could not log out. Please try again.";
+    console.error("Logout error:", error.code);
   }
 });
 
@@ -182,7 +214,7 @@ onAuthStateChanged(auth, (user) => {
     renderGallery();
   } else {
     document.getElementById("signedInAs").textContent = "";
-    document.getElementById("password").value = "";
+    passwordInput.value = "";
   }
 });
 
@@ -191,7 +223,7 @@ function savePhotos() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(photos));
   } catch {
     status.textContent =
-      "The browser could not save the photo list. The uploaded images may still be in Cloudinary.";
+      "The browser could not save the photo list. Uploaded images may still remain in Cloudinary.";
   }
 }
 
@@ -295,6 +327,7 @@ async function uploadPhotos() {
           url: result.secure_url,
           name: collection + " — " + file.name
         });
+
         successful++;
         savePhotos();
         renderGallery();
