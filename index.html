@@ -2,185 +2,221 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#101010">
-  <title>FrameFolio | Photography Gallery</title>
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      background: #f7f6f2;
-      color: #191919;
-      font-family: Arial, sans-serif;
-    }
-    header {
-      padding: 22px 7%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #fff;
-      border-bottom: 1px solid #eee;
-    }
-    .logo { font-size: 23px; font-weight: 800; }
-    .logo span { color: #a67c52; }
-    header a { color: #333; text-decoration: none; font-size: 14px; }
-    .hero {
-      padding: 65px 7% 45px;
-      text-align: center;
-    }
-    .eyebrow {
-      text-transform: uppercase;
-      letter-spacing: 3px;
-      color: #99754f;
-      font-size: 11px;
-      font-weight: bold;
-    }
-    h1 {
-      font-family: Georgia, serif;
-      font-size: clamp(38px, 6vw, 66px);
-      font-weight: 400;
-      margin: 18px 0;
-    }
-    .hero p { color: #777; line-height: 1.7; }
-    .actions { margin-top: 25px; }
-    button {
-      border: 0;
-      background: #191919;
-      color: white;
-      border-radius: 4px;
-      padding: 13px 20px;
-      cursor: pointer;
-      margin: 5px;
-    }
-    button.secondary { background: white; color: #191919; border: 1px solid #ddd; }
-    .section { padding: 15px 7% 60px; }
-    .section-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-bottom: 22px;
-    }
-    h2 { font-family: Georgia, serif; font-weight: 400; font-size: 30px; }
-    .gallery {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 18px;
-    }
-    .card {
-      background: white;
-      border-radius: 7px;
-      overflow: hidden;
-      box-shadow: 0 4px 20px #00000008;
-    }
-    .card img {
-      display: block;
-      width: 100%;
-      height: 230px;
-      object-fit: cover;
-      background: #ddd;
-    }
-    .card-info { padding: 17px; }
-    .card-info h3 { margin: 0 0 7px; font-size: 17px; }
-    .card-info p { margin: 0; font-size: 13px; color: #777; }
-    .card-info button { margin: 14px 0 0; }
-    footer {
-      padding: 30px 7%;
-      text-align: center;
-      background: #191919;
-      color: #ddd;
-      font-size: 13px;
-      line-height: 1.8;
-    }
-    .note { color: #777; font-size: 12px; margin-top: 20px; }
-    @media (max-width: 700px) {
-      .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-      .card img { height: 160px; }
-      .card-info { padding: 12px; }
-      .card-info h3 { font-size: 15px; }
-      .hero { padding-top: 45px; }
-    }
-    @media (max-width: 380px) {
-      .gallery { grid-template-columns: 1fr; }
-      .card img { height: 220px; }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FrameFolio | Photography Gallery</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#faf9f6;color:#242424;font-family:Arial,sans-serif}
+header{padding:22px 7%;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #e8e5df}
+.logo{font-size:23px;font-weight:bold;letter-spacing:-1px}
+.logo span{color:#a17b50}
+header small{color:#777}
+.hero{padding:65px 7% 38px}
+.hero p{color:#a17b50;text-transform:uppercase;letter-spacing:3px;font-size:12px}
+h1{font-family:Georgia,serif;font-size:clamp(38px,7vw,68px);font-weight:normal;margin:15px 0}
+.hero .sub{color:#777;line-height:1.7;max-width:520px}
+main{padding:0 7% 70px}
+.panel{background:white;border:1px solid #e8e5df;border-radius:14px;padding:22px;margin-bottom:30px}
+label{display:block;font-size:13px;margin-bottom:8px;font-weight:bold}
+input,button{font:inherit}
+input[type="text"],input[type="password"]{width:100%;padding:13px;border:1px solid #ddd;border-radius:8px;margin-bottom:16px}
+input[type="file"]{display:block;width:100%;margin:15px 0}
+button{background:#242424;color:white;border:0;padding:12px 18px;border-radius:7px;cursor:pointer}
+button:disabled{opacity:.5;cursor:wait}
+.note{font-size:12px;color:#777;line-height:1.6}
+.section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:35px 0 20px}
+h2{font-family:Georgia,serif;font-weight:normal;font-size:29px}
+#gallery{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.photo{background:white;border:1px solid #eee;border-radius:10px;overflow:hidden}
+.photo img{width:100%;height:250px;object-fit:cover;display:block;background:#eee}
+.photo-info{padding:12px;font-size:13px;display:flex;justify-content:space-between;gap:8px;align-items:center}
+.photo-info button{padding:7px 10px;font-size:12px;background:#eee;color:#333}
+.empty{padding:40px 15px;text-align:center;color:#777;border:1px dashed #d7d1c7;border-radius:10px;grid-column:1/-1}
+#status{font-size:13px;line-height:1.6;margin-top:12px;overflow-wrap:anywhere}
+footer{padding:25px 7%;border-top:1px solid #e8e5df;color:#777;font-size:12px}
+@media(max-width:700px){#gallery{grid-template-columns:repeat(2,minmax(0,1fr))}.photo img{height:190px}.hero{padding-top:42px}}
+@media(max-width:430px){#gallery{grid-template-columns:1fr}.photo img{height:250px}header small{font-size:10px}}
+</style>
 </head>
 <body>
-  <header>
-    <div class="logo">Frame<span>Folio.</span></div>
-    <a href="#galleries">Explore galleries ↗</a>
-  </header>
+<header>
+  <div class="logo">Frame<span>Folio.</span></div>
+  <small>PHOTOGRAPHY • STORIES • MOMENTS</small>
+</header>
 
-  <section class="hero">
-    <div class="eyebrow">Every picture tells a story</div>
-    <h1>Your memories,<br>beautifully collected.</h1>
-    <p>A beautiful home for event photography.<br>
-       Explore moments, relive memories, and save your favourites.</p>
-    <div class="actions">
-      <button onclick="document.getElementById('galleries').scrollIntoView({behavior:'smooth'})">
-        Explore Photos ↓
-      </button>
-      <button class="secondary" onclick="showInfo()">For Photographers</button>
-    </div>
+<section class="hero">
+  <p>Your moments, beautifully framed</p>
+  <h1>Every picture<br>tells a story.</h1>
+  <div class="sub">A simple photography gallery to upload, organize and showcase your favourite photographs.</div>
+</section>
+
+<main>
+  <section class="panel">
+    <h2>Upload photographs</h2>
+    <label for="galleryName">Gallery or collection name</label>
+    <input id="galleryName" type="text" placeholder="e.g. Wedding, Birthday, Nature">
+
+    <label for="photos">Choose photographs</label>
+    <input id="photos" type="file" accept="image/*" multiple>
+    <p class="note">Choose image files only. Uploads use your Cloudinary unsigned upload preset.</p>
+    <button id="uploadBtn" onclick="uploadPhotos()">Upload photos</button>
+    <div id="status" role="status"></div>
   </section>
 
-  <section class="section" id="galleries">
-    <div class="section-top">
-      <div>
-        <div class="eyebrow">Curated moments</div>
-        <h2>Featured Galleries</h2>
-      </div>
-      <span style="font-size:13px;color:#777">Demo gallery · 3 collections</span>
-    </div>
+  <div class="section-head">
+    <h2>Gallery</h2>
+    <span id="photoCount">0 photos</span>
+  </div>
+  <div id="gallery"></div>
+</main>
 
-    <div class="gallery">
-      <article class="card">
-        <img src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80" alt="Wedding celebration">
-        <div class="card-info">
-          <h3>Wedding Stories</h3>
-          <p>Love, laughter & forever</p>
-          <button onclick="openGallery('Wedding Stories')">View collection ↗</button>
-        </div>
-      </article>
+<footer>© 2026 FrameFolio Gallery · Made with care.</footer>
 
-      <article class="card">
-        <img src="https://images.unsplash.com/photo-1530103862676-de8c9deBAD1?auto=format&fit=crop&w=800&q=80" alt="Birthday celebration">
-        <div class="card-info">
-          <h3>Birthday Memories</h3>
-          <p>Another year of joy</p>
-          <button onclick="openGallery('Birthday Memories')">View collection ↗</button>
-        </div>
-      </article>
+<script>
+const CLOUD_NAME = "d7lfnspk";
+const UPLOAD_PRESET = "framefolio_upload";
+const STORAGE_KEY = "framefolio_gallery_photos";
 
-      <article class="card">
-        <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=800&q=80" alt="Special event">
-        <div class="card-info">
-          <h3>Special Moments</h3>
-          <p>The moments worth keeping</p>
-          <button onclick="openGallery('Special Moments')">View collection ↗</button>
-        </div>
-      </article>
-    </div>
-    <p class="note">These are sample collections. Real customer galleries and secure photo access will be added next.</p>
-  </section>
+let photos = [];
 
-  <footer>
-    <strong>FrameFolio.</strong><br>
-    Moments captured. Memories preserved.<br>
-    © 2026 FrameFolio · Photography Gallery Demo
-  </footer>
+try {
+  photos = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+  if (!Array.isArray(photos)) photos = [];
+} catch (e) {
+  photos = [];
+}
 
-  <script>
-    function openGallery(name) {
-      alert(name + "\n\nThis is a demo collection. Individual event galleries will be connected in the next step.");
+function savePhotos() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(photos));
+  } catch (e) {
+    document.getElementById("status").textContent =
+      "Some photos could not be saved in this browser. Your uploaded images remain in Cloudinary.";
+  }
+}
+
+function renderGallery() {
+  const gallery = document.getElementById("gallery");
+  document.getElementById("photoCount").textContent =
+    photos.length + (photos.length === 1 ? " photo" : " photos");
+
+  gallery.replaceChildren();
+
+  if (!photos.length) {
+    const empty = document.createElement("div");
+    empty.className = "empty";
+    empty.textContent = "Your gallery is waiting for its first photographs.";
+    gallery.appendChild(empty);
+    return;
+  }
+
+  photos.forEach((photo, index) => {
+    const card = document.createElement("article");
+    card.className = "photo";
+
+    const img = document.createElement("img");
+    img.src = photo.url;
+    img.alt = photo.name || "Gallery photograph";
+    img.loading = "lazy";
+
+    const info = document.createElement("div");
+    info.className = "photo-info";
+
+    const name = document.createElement("span");
+    name.textContent = photo.name || "Photograph";
+
+    const remove = document.createElement("button");
+    remove.textContent = "Remove";
+    remove.onclick = () => {
+      if (confirm("Remove this photo from this browser's gallery?")) {
+        photos.splice(index, 1);
+        savePhotos();
+        renderGallery();
+      }
+    };
+
+    info.append(name, remove);
+    card.append(img, info);
+    gallery.appendChild(card);
+  });
+}
+
+async function uploadPhotos() {
+  const fileInput = document.getElementById("photos");
+  const files = Array.from(fileInput.files || []);
+  const collection = document.getElementById("galleryName").value.trim();
+  const status = document.getElementById("status");
+  const button = document.getElementById("uploadBtn");
+
+  if (!collection) {
+    status.textContent = "Please enter a gallery name first.";
+    return;
+  }
+
+  if (!files.length) {
+    status.textContent = "Please select at least one photograph.";
+    return;
+  }
+
+  if (files.some(file => !file.type.startsWith("image/"))) {
+    status.textContent = "Please select image files only.";
+    return;
+  }
+
+  if (CLOUD_NAME === "YOUR_CLOUD_NAME" ||
+      UPLOAD_PRESET === "YOUR_UNSIGNED_PRESET") {
+    status.textContent = "Please add your Cloudinary settings in the code first.";
+    return;
+  }
+
+  button.disabled = true;
+  let successful = 0;
+  const errors = [];
+
+  try {
+    for (const file of files) {
+      status.textContent = "Uploading " + file.name + "...";
+
+      const data = new FormData();
+      data.append("file", file);
+      data.append("upload_preset", UPLOAD_PRESET);
+      data.append("folder", "framefolio-gallery");
+
+      try {
+        const response = await fetch(
+          "https://api.cloudinary.com/v1_1/" +
+          CLOUD_NAME + "/image/upload",
+          { method: "POST", body: data }
+        );
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          throw new Error(result.error?.message || "Upload failed");
+        }
+
+        photos.unshift({
+          url: result.secure_url,
+          name: collection + " — " + file.name
+        });
+        successful++;
+        savePhotos();
+        renderGallery();
+      } catch (error) {
+        errors.push(file.name + ": " + error.message);
+      }
     }
 
-    function showInfo() {
-      alert("Photographers: gallery creation, photo uploads, QR sharing and customer access are coming in the next version.");
-    }
-  </script>
+    status.textContent = successful + " photo(s) uploaded successfully." +
+      (errors.length ? " Failed: " + errors.join(" | ") : "");
+    fileInput.value = "";
+  } finally {
+    button.disabled = false;
+  }
+}
+
+renderGallery();
+</script>
 </body>
 </html>
