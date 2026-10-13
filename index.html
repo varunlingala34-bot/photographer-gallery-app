@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,271 +6,85 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FrameFolio | Photography Gallery</title>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-
 <style>
-:root{
-  --bg:#f7f5f1;
-  --surface:#ffffff;
-  --ink:#1f1d1a;
-  --ink-soft:#5f5a53;
-  --ink-mute:#8d877e;
-  --line:#e7e2da;
-  --line-strong:#d6cfc4;
-  --accent:#8a6d4b;
-  --accent-dark:#6f553a;
-  --accent-soft:#f1e9de;
-  --dark:#211f1b;
-  --danger:#a63a34;
-  --danger-soft:#fbeceb;
-  --radius:14px;
-  --shadow-sm:0 1px 2px rgba(31,29,26,.05);
-  --shadow-md:0 8px 24px -8px rgba(31,29,26,.14);
-  --shadow-lg:0 18px 40px -14px rgba(31,29,26,.22);
-}
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
 body{
-  margin:0;background:var(--bg);color:var(--ink);
-  font-family:"Inter",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
-  font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;
-  min-height:100vh;display:flex;flex-direction:column
+  margin:0;background:#faf9f6;color:#242424;
+  font-family:Arial,sans-serif
 }
-
-/* HEADER */
 header{
-  position:sticky;top:0;z-index:20;
-  padding:16px 7%;display:flex;justify-content:space-between;
-  align-items:center;gap:12px;flex-wrap:wrap;
-  background:rgba(247,245,241,.88);
-  backdrop-filter:saturate(1.4) blur(12px);
-  -webkit-backdrop-filter:saturate(1.4) blur(12px);
-  border-bottom:1px solid var(--line)
+  padding:22px 7%;display:flex;justify-content:space-between;
+  align-items:center;border-bottom:1px solid #e8e3dc;
+  gap:12px;flex-wrap:wrap
 }
-.logo{
-  font-family:"Cormorant Garamond",Georgia,serif;
-  font-size:28px;font-weight:700;letter-spacing:.5px;line-height:1.1;
-  color:var(--ink)
-}
-.logo::before{
-  content:"";display:inline-block;width:10px;height:10px;margin-right:9px;
-  border:2px solid var(--accent);border-radius:3px;
-  transform:translateY(-2px) rotate(45deg)
-}
-header small{
-  display:block;color:var(--ink-mute);font-size:12px;
-  letter-spacing:.4px;margin-top:2px
-}
-
-/* LAYOUT */
-main{
-  width:100%;max-width:1080px;margin:0 auto;
-  padding:44px 20px 56px;flex:1
-}
-h1{
-  font-family:"Cormorant Garamond",Georgia,serif;
-  font-size:40px;font-weight:600;line-height:1.1;
-  letter-spacing:-.2px;margin:0 0 10px
-}
-h2{
-  font-size:17px;font-weight:600;margin:0 0 6px;letter-spacing:-.1px
-}
-.muted{color:var(--ink-soft);line-height:1.65;margin:0 0 6px}
-.eyebrow{
-  display:inline-block;font-size:11.5px;font-weight:600;
-  letter-spacing:1.6px;text-transform:uppercase;
-  color:var(--accent);margin-bottom:12px
-}
-
-/* PANELS */
+.logo{font-size:25px;font-weight:bold;letter-spacing:1px}
+header small{color:#777}
+main{max-width:1050px;margin:35px auto;padding:0 18px}
+h1{font-size:30px;margin-bottom:8px}
+h2{font-size:21px}
+.muted{color:#777;line-height:1.6}
 .panel{
-  background:var(--surface);border:1px solid var(--line);
-  padding:28px;border-radius:var(--radius);margin:22px 0;
-  box-shadow:var(--shadow-sm)
-}
-#loginPanel{
-  max-width:440px;margin:36px auto;padding:38px 34px;
-  box-shadow:var(--shadow-lg);text-align:left
-}
-#loginPanel h1{font-size:36px}
-#notFoundArea{
-  max-width:520px;margin:60px auto;text-align:center;padding:46px 30px
-}
-
-/* FORMS */
-label{
-  display:block;font-size:13px;font-weight:500;color:var(--ink-soft);
-  margin-top:6px
+  background:white;border:1px solid #e8e3dc;
+  padding:22px;border-radius:14px;margin:18px 0
 }
 input,button{
-  font:inherit;border-radius:10px;padding:12px 14px;max-width:100%
+  font:inherit;border-radius:8px;padding:12px;
+  max-width:100%
 }
 input{
-  border:1px solid var(--line-strong);width:100%;
-  margin:7px 0 16px;background:#fdfcfa;color:var(--ink);
-  transition:border-color .15s,box-shadow .15s,background .15s
+  border:1px solid #d8d1c8;width:100%;
+  margin:7px 0 14px;background:white
 }
-input::placeholder{color:#aaa49a}
-input:hover{border-color:#c4bbad}
-input:focus{
-  outline:0;border-color:var(--accent);background:#fff;
-  box-shadow:0 0 0 4px rgba(138,109,75,.15)
-}
-input[type="file"]{
-  padding:11px;border-style:dashed;border-width:1.5px;
-  background:var(--accent-soft);cursor:pointer;color:var(--ink-soft)
-}
-input[type="file"]::file-selector-button{
-  font:inherit;font-weight:500;border:0;border-radius:8px;
-  background:var(--dark);color:#fff;padding:8px 14px;margin-right:12px;
-  cursor:pointer
-}
-
-/* BUTTONS */
 button{
-  border:1px solid transparent;background:var(--dark);color:#fff;
-  cursor:pointer;margin:4px 6px 4px 0;font-weight:500;
-  letter-spacing:.1px;
-  transition:background .15s,transform .1s,box-shadow .15s,border-color .15s
+  border:0;background:#292722;color:white;
+  cursor:pointer;margin:4px 4px 4px 0
 }
-button:hover{background:#34312b;box-shadow:var(--shadow-md)}
-button:active{transform:translateY(1px)}
-button:focus-visible{
-  outline:0;box-shadow:0 0 0 4px rgba(138,109,75,.3)
-}
-button.secondary{
-  background:#fff;color:var(--ink);border-color:var(--line-strong)
-}
-button.secondary:hover{
-  background:var(--accent-soft);border-color:var(--accent);box-shadow:none
-}
-button.danger{
-  background:var(--danger-soft);color:var(--danger);
-  border-color:#f0cfcc
-}
-button.danger:hover{background:var(--danger);color:#fff;box-shadow:none}
-button:disabled{opacity:.55;cursor:not-allowed;box-shadow:none;transform:none}
-#loginForm button[type="submit"]{width:100%;padding:13px;margin:4px 0 8px}
-#forgotBtn{width:100%}
-#logoutBtn{margin:0;padding:9px 18px}
-
-a{color:var(--accent-dark);overflow-wrap:anywhere;text-underline-offset:3px}
-a:hover{color:var(--ink)}
+button.secondary{background:#eee9e2;color:#292722}
+button.danger{background:#a33b35}
+button:disabled{opacity:.55;cursor:not-allowed}
+a{color:#725c43;overflow-wrap:anywhere}
 .hidden{display:none!important}
-.status{
-  margin:10px 0;line-height:1.6;overflow-wrap:anywhere;
-  font-size:14px;color:var(--ink-soft)
-}
-.status:empty{margin:0}
-#loginStatus{text-align:center}
-
-/* DASHBOARD */
-#adminArea > h1{margin-top:6px}
+.status{margin:12px 0;line-height:1.6;overflow-wrap:anywhere}
 .gallery-list{
-  display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
-  gap:14px;margin-top:14px
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:12px
 }
 .gallery-item{
-  border:1px solid var(--line);border-radius:12px;padding:18px;
-  background:#fdfcfa;transition:transform .2s,box-shadow .2s,border-color .2s
+  border:1px solid #e8e3dc;border-radius:10px;
+  padding:15px;background:#fff
 }
-.gallery-item:hover{
-  transform:translateY(-2px);box-shadow:var(--shadow-md);
-  border-color:var(--line-strong)
-}
-.gallery-item strong{
-  display:block;font-family:"Cormorant Garamond",Georgia,serif;
-  font-size:22px;font-weight:600;line-height:1.2
-}
-.gallery-item .muted{
-  font-size:12px;color:var(--ink-mute);margin:6px 0 12px;
-  overflow-wrap:anywhere
-}
-.gallery-item button{padding:9px 14px;font-size:13.5px}
-
-#managePanel{border-top:3px solid var(--accent)}
-#manageTitle{
-  font-family:"Cormorant Garamond",Georgia,serif;
-  font-size:30px;font-weight:600;margin-bottom:4px
-}
-#qrArea{
-  background:var(--bg);border:1px solid var(--line);
-  border-radius:12px;padding:20px;margin-top:16px;text-align:center
-}
-#qrArea h2{margin-top:4px}
-.qr-image{
-  display:block;max-width:100%;width:240px;margin:16px auto;
-  padding:12px;background:#fff;border:1px solid var(--line);
-  border-radius:12px;box-shadow:var(--shadow-sm)
-}
-
-/* PHOTO GRID */
 .photo-grid{
-  display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));
-  gap:16px;margin-top:20px
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));
+  gap:14px;margin-top:20px
 }
 .photo-card{
-  border:1px solid var(--line);border-radius:12px;
-  overflow:hidden;background:#fff;min-width:0;
-  transition:transform .2s,box-shadow .2s
+  border:1px solid #e8e3dc;border-radius:10px;
+  overflow:hidden;background:#fff;min-width:0
 }
-.photo-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg)}
 .photo-card img{
-  width:100%;height:210px;object-fit:cover;display:block;
-  background:linear-gradient(110deg,#eee9e2 30%,#f6f2ec 50%,#eee9e2 70%);
-  transition:transform .4s
+  width:100%;height:190px;object-fit:cover;display:block;
+  background:#eee
 }
-.photo-card:hover img{transform:scale(1.03)}
-.photo-card{isolation:isolate}
-.photo-info{padding:12px}
+.photo-info{padding:10px}
 .photo-name{
-  font-size:12.5px;overflow-wrap:anywhere;
-  margin:8px 0 10px;color:var(--ink-mute)
+  font-size:13px;overflow-wrap:anywhere;
+  margin:5px 0 9px;color:#555
 }
-.photo-info label{
-  display:flex;align-items:center;font-size:13.5px;font-weight:500;
-  color:var(--ink);margin:0;cursor:pointer
-}
-.photo-info button{
-  width:100%;margin:4px 0 0;padding:9px 12px;font-size:13.5px
-}
-.photo-select{
-  width:18px;height:18px;margin:0 9px 0 0;padding:0;
-  accent-color:var(--accent);cursor:pointer;flex:none
-}
-
-/* GUEST */
-#guestArea > h1{margin-top:6px}
+.photo-info button{width:100%;margin:4px 0}
+.photo-select{width:auto;margin:0 6px 0 0}
 .toolbar{
-  display:flex;gap:10px;align-items:center;
-  flex-wrap:wrap;margin:0 0 6px
+  display:flex;gap:8px;align-items:center;
+  flex-wrap:wrap;margin:15px 0
 }
 .toolbar button{margin:0}
-#selectionStatus{font-size:14px;margin:12px 0 0}
-#guestPhotoStatus{margin-top:6px}
-
-hr{border:0;border-top:1px solid var(--line);margin:26px 0}
-footer{
-  text-align:center;padding:30px 20px;color:var(--ink-mute);
-  font-size:13px;border-top:1px solid var(--line);
-  letter-spacing:.3px
-}
-
-@media(max-width:600px){
-  header{padding:14px 18px}
-  .logo{font-size:24px}
-  main{padding:28px 14px 40px}
-  .panel{padding:20px 18px}
-  #loginPanel{padding:28px 22px;margin-top:16px}
-  h1{font-size:32px}
-  .photo-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
-  .photo-card img{height:160px}
-  .toolbar button{flex:1 1 auto}
-}
-@media(prefers-reduced-motion:reduce){
-  *{transition:none!important;scroll-behavior:auto!important}
+.qr-image{display:block;max-width:100%;width:280px;margin:15px auto}
+hr{border:0;border-top:1px solid #e8e3dc;margin:22px 0}
+footer{text-align:center;padding:25px;color:#888;font-size:13px}
+@media(max-width:500px){
+  header{padding:18px}
+  main{margin:22px auto}
+  .panel{padding:16px}
+  h1{font-size:25px}
 }
 </style>
 </head>
@@ -286,7 +101,6 @@ footer{
 <main>
   <!-- PHOTOGRAPHER LOGIN -->
   <section id="loginPanel" class="panel hidden">
-    <span class="eyebrow">Studio access</span>
     <h1>Photographer Login</h1>
     <p class="muted">Sign in to manage your wedding galleries.</p>
 
@@ -308,7 +122,6 @@ footer{
 
   <!-- PHOTOGRAPHER DASHBOARD -->
   <section id="adminArea" class="hidden">
-    <span class="eyebrow">Dashboard</span>
     <h1>Photographer Dashboard</h1>
     <p class="muted">Create a wedding gallery, upload photos, and share its QR code.</p>
 
@@ -337,6 +150,7 @@ footer{
       <button id="copyLinkBtn" class="secondary">Copy Guest Link</button>
 
       <div id="qrArea" class="hidden">
+        <hr>
         <h2>Wedding QR Code</h2>
         <p class="muted">Guests can scan this QR code to view and download photos.</p>
         <img id="qrImage" class="qr-image" alt="Wedding gallery QR code">
@@ -362,7 +176,6 @@ footer{
 
   <!-- PUBLIC GUEST GALLERY -->
   <section id="guestArea" class="hidden">
-    <span class="eyebrow">Your gallery</span>
     <h1 id="guestTitle">Wedding Gallery</h1>
     <p class="muted">Select your favourite moments and save them to your device.</p>
 
