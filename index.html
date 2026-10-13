@@ -8,22 +8,23 @@
 <style>
 *{box-sizing:border-box}
 body{margin:0;background:#faf9f6;color:#242424;font-family:Arial,sans-serif}
-header{padding:22px 7%;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #e8e5df}
+header{padding:22px 7%;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #e8e5df;gap:12px}
 .logo{font-size:23px;font-weight:bold;letter-spacing:-1px}
 .logo span{color:#a17b50}
 header small{color:#777}
-.hero{padding:65px 7% 38px}
+.hero{padding:55px 7% 35px}
 .hero p{color:#a17b50;text-transform:uppercase;letter-spacing:3px;font-size:12px}
 h1{font-family:Georgia,serif;font-size:clamp(38px,7vw,68px);font-weight:normal;margin:15px 0}
 .hero .sub{color:#777;line-height:1.7;max-width:520px}
 main{padding:0 7% 70px}
-.panel{background:white;border:1px solid #e8e5df;border-radius:14px;padding:22px;margin-bottom:30px}
+.panel{background:white;border:1px solid #e8e5df;border-radius:14px;padding:22px;margin-bottom:25px}
 label{display:block;font-size:13px;margin-bottom:8px;font-weight:bold}
 input,button{font:inherit}
-input[type="text"],input[type="password"]{width:100%;padding:13px;border:1px solid #ddd;border-radius:8px;margin-bottom:16px}
+input[type="text"],input[type="email"],input[type="password"]{width:100%;padding:13px;border:1px solid #ddd;border-radius:8px;margin-bottom:16px}
 input[type="file"]{display:block;width:100%;margin:15px 0}
 button{background:#242424;color:white;border:0;padding:12px 18px;border-radius:7px;cursor:pointer}
 button:disabled{opacity:.5;cursor:wait}
+.secondary{background:#eee;color:#242424}
 .note{font-size:12px;color:#777;line-height:1.6}
 .section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:35px 0 20px}
 h2{font-family:Georgia,serif;font-weight:normal;font-size:29px}
@@ -33,7 +34,8 @@ h2{font-family:Georgia,serif;font-weight:normal;font-size:29px}
 .photo-info{padding:12px;font-size:13px;display:flex;justify-content:space-between;gap:8px;align-items:center}
 .photo-info button{padding:7px 10px;font-size:12px;background:#eee;color:#333}
 .empty{padding:40px 15px;text-align:center;color:#777;border:1px dashed #d7d1c7;border-radius:10px;grid-column:1/-1}
-#status{font-size:13px;line-height:1.6;margin-top:12px;overflow-wrap:anywhere}
+#status,#loginStatus{font-size:13px;line-height:1.6;margin-top:12px;overflow-wrap:anywhere}
+.hidden{display:none!important}
 footer{padding:25px 7%;border-top:1px solid #e8e5df;color:#777;font-size:12px}
 @media(max-width:700px){#gallery{grid-template-columns:repeat(2,minmax(0,1fr))}.photo img{height:190px}.hero{padding-top:42px}}
 @media(max-width:430px){#gallery{grid-template-columns:1fr}.photo img{height:250px}header small{font-size:10px}}
@@ -48,32 +50,77 @@ footer{padding:25px 7%;border-top:1px solid #e8e5df;color:#777;font-size:12px}
 <section class="hero">
   <p>Your moments, beautifully framed</p>
   <h1>Every picture<br>tells a story.</h1>
-  <div class="sub">A simple photography gallery to upload, organize and showcase your favourite photographs.</div>
+  <div class="sub">A photography gallery to upload, organize and showcase your favourite photographs.</div>
 </section>
 
 <main>
-  <section class="panel">
-    <h2>Upload photographs</h2>
-    <label for="galleryName">Gallery or collection name</label>
-    <input id="galleryName" type="text" placeholder="e.g. Wedding, Birthday, Nature">
-
-    <label for="photos">Choose photographs</label>
-    <input id="photos" type="file" accept="image/*" multiple>
-    <p class="note">Choose image files only. Uploads use your Cloudinary unsigned upload preset.</p>
-    <button id="uploadBtn" onclick="uploadPhotos()">Upload photos</button>
-    <div id="status" role="status"></div>
+  <section class="panel" id="loginPanel">
+    <h2>Photographer Login</h2>
+    <p class="note">Sign in with the email and password you created in Firebase Authentication.</p>
+    <form id="loginForm">
+      <label for="email">Email address</label>
+      <input id="email" type="email" autocomplete="username" placeholder="Your email address" required>
+      <label for="password">Password</label>
+      <input id="password" type="password" autocomplete="current-password" placeholder="Your password" required>
+      <button id="loginBtn" type="submit">Log in</button>
+    </form>
+    <div id="loginStatus" role="status"></div>
   </section>
 
-  <div class="section-head">
-    <h2>Gallery</h2>
-    <span id="photoCount">0 photos</span>
-  </div>
-  <div id="gallery"></div>
+  <section id="adminArea" class="hidden">
+    <section class="panel">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+        <div>
+          <h2 style="margin-bottom:6px">Photographer Dashboard</h2>
+          <div id="signedInAs" class="note"></div>
+        </div>
+        <button id="logoutBtn" class="secondary" type="button">Log out</button>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Upload photographs</h2>
+      <label for="galleryName">Gallery or collection name</label>
+      <input id="galleryName" type="text" placeholder="e.g. Wedding, Birthday, Nature">
+      <label for="photos">Choose photographs</label>
+      <input id="photos" type="file" accept="image/*" multiple>
+      <p class="note">Uploads use your Cloudinary unsigned upload preset.</p>
+      <button id="uploadBtn" type="button">Upload photos</button>
+      <div id="status" role="status"></div>
+    </section>
+
+    <div class="section-head">
+      <h2>Gallery</h2>
+      <span id="photoCount">0 photos</span>
+    </div>
+    <div id="gallery"></div>
+  </section>
 </main>
 
 <footer>© 2026 FrameFolio Gallery · Made with care.</footer>
 
-<script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  signOut
+} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyA-G2guae7rX9w3uQYVDMiIlzWN5j9lnJQ",
+  authDomain: "framefolio-gallery.firebaseapp.com",
+  projectId: "framefolio-gallery",
+  storageBucket: "framefolio-gallery.firebasestorage.app",
+  messagingSenderId: "867132582416",
+  appId: "1:867132582416:web:66c9463dab4e38a0533895",
+  measurementId: "G-FWDJ42K5V3"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
 const CLOUD_NAME = "d7lfnspk";
 const UPLOAD_PRESET = "framefolio_upload";
 const STORAGE_KEY = "framefolio_gallery_photos";
@@ -83,16 +130,68 @@ let photos = [];
 try {
   photos = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
   if (!Array.isArray(photos)) photos = [];
-} catch (e) {
+} catch {
   photos = [];
 }
+
+const loginPanel = document.getElementById("loginPanel");
+const adminArea = document.getElementById("adminArea");
+const loginStatus = document.getElementById("loginStatus");
+const status = document.getElementById("status");
+const loginBtn = document.getElementById("loginBtn");
+const uploadBtn = document.getElementById("uploadBtn");
+
+document.getElementById("loginForm").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  loginBtn.disabled = true;
+  loginStatus.textContent = "Logging in...";
+
+  try {
+    await signInWithEmailAndPassword(
+      auth,
+      document.getElementById("email").value.trim(),
+      document.getElementById("password").value
+    );
+    loginStatus.textContent = "";
+    document.getElementById("password").value = "";
+  } catch (error) {
+    loginStatus.textContent =
+      error.code === "auth/invalid-credential"
+        ? "Email or password is incorrect. Please check and try again."
+        : "Login failed: " + error.message;
+  } finally {
+    loginBtn.disabled = false;
+  }
+});
+
+document.getElementById("logoutBtn").addEventListener("click", async () => {
+  try {
+    await signOut(auth);
+  } catch (error) {
+    status.textContent = "Could not log out: " + error.message;
+  }
+});
+
+onAuthStateChanged(auth, (user) => {
+  loginPanel.classList.toggle("hidden", !!user);
+  adminArea.classList.toggle("hidden", !user);
+
+  if (user) {
+    document.getElementById("signedInAs").textContent =
+      "Signed in as " + (user.email || "Photographer");
+    renderGallery();
+  } else {
+    document.getElementById("signedInAs").textContent = "";
+    document.getElementById("password").value = "";
+  }
+});
 
 function savePhotos() {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(photos));
-  } catch (e) {
-    document.getElementById("status").textContent =
-      "Some photos could not be saved in this browser. Your uploaded images remain in Cloudinary.";
+  } catch {
+    status.textContent =
+      "The browser could not save the photo list. The uploaded images may still be in Cloudinary.";
   }
 }
 
@@ -143,11 +242,13 @@ function renderGallery() {
 }
 
 async function uploadPhotos() {
-  const fileInput = document.getElementById("photos");
-  const files = Array.from(fileInput.files || []);
+  if (!auth.currentUser) {
+    status.textContent = "Please log in first.";
+    return;
+  }
+
+  const files = Array.from(document.getElementById("photos").files || []);
   const collection = document.getElementById("galleryName").value.trim();
-  const status = document.getElementById("status");
-  const button = document.getElementById("uploadBtn");
 
   if (!collection) {
     status.textContent = "Please enter a gallery name first.";
@@ -164,13 +265,7 @@ async function uploadPhotos() {
     return;
   }
 
-  if (CLOUD_NAME === "YOUR_CLOUD_NAME" ||
-      UPLOAD_PRESET === "YOUR_UNSIGNED_PRESET") {
-    status.textContent = "Please add your Cloudinary settings in the code first.";
-    return;
-  }
-
-  button.disabled = true;
+  uploadBtn.disabled = true;
   let successful = 0;
   const errors = [];
 
@@ -210,12 +305,13 @@ async function uploadPhotos() {
 
     status.textContent = successful + " photo(s) uploaded successfully." +
       (errors.length ? " Failed: " + errors.join(" | ") : "");
-    fileInput.value = "";
+    document.getElementById("photos").value = "";
   } finally {
-    button.disabled = false;
+    uploadBtn.disabled = false;
   }
 }
 
+uploadBtn.addEventListener("click", uploadPhotos);
 renderGallery();
 </script>
 </body>
