@@ -540,6 +540,7 @@ input,textarea{font-size:16px} /* stops phones zooming in when a field is tapped
             <button id="shareQrBtn">Show / Share QR Code</button>
             <button id="copyLinkBtn" class="secondary">Copy Guest Link</button>
             <button id="shareGalleryBtn" class="secondary">Share Gallery</button>
+            <button id="deleteGalleryBtn" class="danger" type="button">Delete Gallery</button>
           </div>
 
           <section class="panel panel-sub" style="margin:20px 0">
@@ -1321,6 +1322,42 @@ $("shareGalleryBtn").addEventListener("click", () => {
     return;
   }
   shareGallery(galleryUrl(currentGalleryId), currentGalleryName);
+});
+
+/* Delete a whole gallery (its photo records first, then the gallery itself) */
+$("deleteGalleryBtn").addEventListener("click", async () => {
+  if (!auth.currentUser || !currentGalleryId) {
+    toast("Please open a wedding gallery first.", "error");
+    return;
+  }
+  const id = currentGalleryId;
+  const name = currentGalleryName || "this gallery";
+  const ok = await confirmDialog(
+    `Delete "${name}" and all its photos from FrameFolio? Its guest link and QR code will stop working. This cannot be undone.`,
+    "Delete Gallery"
+  );
+  if (!ok) return;
+
+  const btn = $("deleteGalleryBtn");
+  btn.disabled = true;
+  try {
+    const photos = await getDocs(collection(db, "galleries", id, "photos"));
+    for (const p of photos.docs) await deleteDoc(p.ref);
+    await deleteDoc(doc(db, "galleries", id));
+
+    currentGalleryId = null;
+    currentGalleryName = "";
+    show("managePanel", false);
+    show("qrArea", false);
+    $("managePhotos").replaceChildren();
+    await loadWeddingList();
+    toast("Gallery deleted.");
+  } catch(e) {
+    console.error(e);
+    toast("Could not delete gallery: " + e.message, "error");
+  } finally {
+    btn.disabled = false;
+  }
 });
 
 $("guestShareBtn").addEventListener("click", () => {
