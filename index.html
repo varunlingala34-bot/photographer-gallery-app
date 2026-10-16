@@ -218,6 +218,17 @@ hr{border:0;border-top:1px solid #eee8df;margin:25px 0}
           <button id="shareQrBtn">Show / Share QR Code</button>
           <button id="copyLinkBtn" class="secondary">Copy Guest Link</button>
 
+          <section class="panel" style="margin:18px 0;background:#fdfcfa">
+            <h2>Guest Gallery Greeting</h2>
+            <p class="section-caption">Personalise the message for this event. It will only affect this gallery.</p>
+            <label for="eventGreetingTitle">Greeting heading</label>
+            <input id="eventGreetingTitle" maxlength="120" placeholder="Example: Happy Wedding! ♡">
+            <label for="eventGreetingMessage">Greeting message</label>
+            <textarea id="eventGreetingMessage" maxlength="1000" placeholder="Write a special message for this event..."></textarea>
+            <button type="button" id="saveGreetingBtn">Save Greeting</button>
+            <div id="greetingStatus" class="status" role="status"></div>
+          </section>
+
           <div id="qrArea" class="hidden">
             <hr>
             <h2>Wedding QR Code</h2>
@@ -298,10 +309,10 @@ hr{border:0;border-top:1px solid #eee8df;margin:25px 0}
   </div>
 
   <div class="wedding-note">
-    <h2>Happy Wedding!</h2>
-    <blockquote>“Two hearts, one beautiful journey, and a lifetime of memories to create.”</blockquote>
-    <p>May your love grow stronger with every passing day. Wishing you a lifetime of happiness, laughter, and togetherness. ♡</p>
-    <small>WITH LOVE FROM YOUR PHOTOGRAPHY STUDIO</small>
+    <h2 id="guestGreetingTitle">Happy Wedding! ♡</h2>
+    <blockquote id="guestGreetingMessage">“Two hearts, one beautiful journey, and a lifetime of memories to create.”</blockquote>
+    <p id="guestGreetingSubmessage">May your love grow stronger with every passing day. Wishing you a lifetime of happiness, laughter, and togetherness. ♡</p>
+    <small id="guestStudioSignature">WITH LOVE FROM YOUR PHOTOGRAPHY STUDIO</small>
   </div>
 
   <h1 id="guestTitle">Wedding Gallery</h1>
@@ -761,9 +772,42 @@ async function openManageGallery(id, name) {
   show("qrArea", false);
   $("photoFiles").value = "";
   message("uploadStatus", "");
+  message("greetingStatus", "");
+  try {
+    const gallerySnap = await getDoc(doc(db, "galleries", id));
+    const galleryData = gallerySnap.exists() ? gallerySnap.data() : {};
+    $("eventGreetingTitle").value = galleryData.eventHeading || "Happy Wedding! ♡";
+    $("eventGreetingMessage").value = galleryData.eventMessage || "“Two hearts, one beautiful journey, and a lifetime of memories to create.”";
+  } catch (e) {
+    console.error(e);
+    message("greetingStatus", "Could not load this gallery's greeting: " + e.message);
+  }
   await loadManagePhotos();
   $("managePanel").scrollIntoView({behavior: "smooth", block: "start"});
 }
+
+$("saveGreetingBtn").addEventListener("click", async () => {
+  if (!auth.currentUser || !currentGalleryId) {
+    message("greetingStatus", "Open a gallery first.");
+    return;
+  }
+  const btn = $("saveGreetingBtn");
+  btn.disabled = true;
+  message("greetingStatus", "Saving greeting...");
+  try {
+    await setDoc(doc(db, "galleries", currentGalleryId), {
+      eventHeading: $("eventGreetingTitle").value.trim() || "Happy Wedding! ♡",
+      eventMessage: $("eventGreetingMessage").value.trim() || "“Two hearts, one beautiful journey, and a lifetime of memories to create.”",
+      updatedAt: serverTimestamp()
+    }, {merge: true});
+    message("greetingStatus", "Greeting saved for this event!");
+  } catch (e) {
+    console.error(e);
+    message("greetingStatus", "Could not save greeting: " + e.message);
+  } finally {
+    btn.disabled = false;
+  }
+});
 
 function showQr() {
   if (!currentGalleryId) {
@@ -1053,12 +1097,18 @@ async function loadGuestGallery() {
     const g = gs.data();
     currentGalleryName = g.customerName || "FrameFolio";
     $("guestTitle").textContent = currentGalleryName + " — Photo Gallery";
+    $("guestGreetingTitle").textContent = g.eventHeading || "Happy Wedding! ♡";
+    $("guestGreetingMessage").textContent = g.eventMessage || "“Two hearts, one beautiful journey, and a lifetime of memories to create.”";
+    $("guestGreetingSubmessage").textContent = g.eventSubmessage || "May your love grow stronger with every passing day. Wishing you a lifetime of happiness, laughter, and togetherness. ♡";
 
     if (g.ownerUid) {
       const ss = await getDoc(doc(db, "studios", g.ownerUid));
-      renderGuestStudio(ss.exists() && ss.data().isPublic === true ? ss.data() : {});
+      const studio = ss.exists() && ss.data().isPublic === true ? ss.data() : {};
+      renderGuestStudio(studio);
+      $("guestStudioSignature").textContent = "WITH LOVE FROM " + (studio.studioName || "YOUR PHOTOGRAPHY STUDIO").toUpperCase();
     } else {
       renderGuestStudio({});
+      $("guestStudioSignature").textContent = "WITH LOVE FROM YOUR PHOTOGRAPHY STUDIO";
     }
 
     const ps = await getDocs(collection(db, "galleries", galleryParam, "photos"));
