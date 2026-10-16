@@ -537,6 +537,7 @@ input,textarea{font-size:16px} /* stops phones zooming in when a field is tapped
           <div class="toolbar" style="margin-top:12px">
             <button id="shareQrBtn">Show / Share QR Code</button>
             <button id="copyLinkBtn" class="secondary">Copy Guest Link</button>
+            <button id="shareGalleryBtn" class="secondary">Share Gallery</button>
           </div>
 
           <section class="panel panel-sub" style="margin:20px 0">
@@ -645,6 +646,7 @@ input,textarea{font-size:16px} /* stops phones zooming in when a field is tapped
     <div class="toolbar">
       <button id="selectAllBtn" class="secondary">Select All</button>
       <button id="clearSelectionBtn" class="secondary">Clear Selection</button>
+      <button id="guestShareBtn" class="secondary">Share Gallery</button>
       <button id="downloadZipBtn">Download Selected ZIP</button>
     </div>
     <p id="selectionStatus" style="margin:10px 0 0">0 photos selected.</p>
@@ -1288,6 +1290,39 @@ $("copyLinkBtn").addEventListener("click", async () => {
 
 $("openGuestBtn").addEventListener("click", () => {
   if (currentGalleryId) window.open(galleryUrl(currentGalleryId), "_blank", "noopener");
+});
+
+/* Share a gallery with other people (phone share menu, with fallbacks) */
+async function shareGallery(link, name) {
+  const title = (name || "Photo Gallery") + " — FrameFolio";
+  const text = "View and download photos from " + (name || "this gallery") + ":";
+  if (navigator.share) {
+    try {
+      await navigator.share({title, text, url: link});
+      return;
+    } catch(e) {
+      if (e && e.name === "AbortError") return; // person closed the share menu
+      console.warn(e);
+    }
+  }
+  // Fallback for computers/browsers without a share menu: WhatsApp share page
+  window.open("https://wa.me/?text=" + encodeURIComponent(text + " " + link), "_blank", "noopener");
+  try {
+    await navigator.clipboard.writeText(link);
+    toast("Link copied. You can also paste it anywhere.");
+  } catch {}
+}
+
+$("shareGalleryBtn").addEventListener("click", () => {
+  if (!currentGalleryId) {
+    toast("Please open a wedding gallery first.", "error");
+    return;
+  }
+  shareGallery(galleryUrl(currentGalleryId), currentGalleryName);
+});
+
+$("guestShareBtn").addEventListener("click", () => {
+  shareGallery(location.href, currentGalleryName);
 });
 
 function safeName(name) {
