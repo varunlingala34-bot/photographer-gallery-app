@@ -223,8 +223,10 @@ hr{border:0;border-top:1px solid #eee8df;margin:25px 0}
             <p class="section-caption">Personalise the message for this event. It will only affect this gallery.</p>
             <label for="eventGreetingTitle">Greeting heading</label>
             <input id="eventGreetingTitle" maxlength="120" placeholder="Example: Happy Wedding! ♡">
-            <label for="eventGreetingMessage">Greeting message</label>
-            <textarea id="eventGreetingMessage" maxlength="1000" placeholder="Write a special message for this event..."></textarea>
+            <label for="eventGreetingMessage">Main greeting / event name</label>
+            <textarea id="eventGreetingMessage" maxlength="1000" placeholder="Example: monkey man"></textarea>
+            <label for="eventGreetingSubmessage">Description below the main greeting (optional)</label>
+            <textarea id="eventGreetingSubmessage" maxlength="1000" placeholder="Write a message for this birthday, wedding, or event. Leave blank to hide it."></textarea>
             <button type="button" id="saveGreetingBtn">Save Greeting</button>
             <div id="greetingStatus" class="status" role="status"></div>
           </section>
@@ -311,7 +313,7 @@ hr{border:0;border-top:1px solid #eee8df;margin:25px 0}
   <div class="wedding-note">
     <h2 id="guestGreetingTitle">Happy Wedding! ♡</h2>
     <blockquote id="guestGreetingMessage">“Two hearts, one beautiful journey, and a lifetime of memories to create.”</blockquote>
-    <p id="guestGreetingSubmessage">May your love grow stronger with every passing day. Wishing you a lifetime of happiness, laughter, and togetherness. ♡</p>
+    <p id="guestGreetingSubmessage" class="hidden"></p>
     <small id="guestStudioSignature">WITH LOVE FROM YOUR PHOTOGRAPHY STUDIO</small>
   </div>
 
@@ -777,7 +779,8 @@ async function openManageGallery(id, name) {
     const gallerySnap = await getDoc(doc(db, "galleries", id));
     const galleryData = gallerySnap.exists() ? gallerySnap.data() : {};
     $("eventGreetingTitle").value = galleryData.eventHeading || "Happy Wedding! ♡";
-    $("eventGreetingMessage").value = galleryData.eventMessage || "“Two hearts, one beautiful journey, and a lifetime of memories to create.”";
+    $("eventGreetingMessage").value = galleryData.eventMessage || "";
+    $("eventGreetingSubmessage").value = galleryData.eventSubmessage || "";
   } catch (e) {
     console.error(e);
     message("greetingStatus", "Could not load this gallery's greeting: " + e.message);
@@ -797,7 +800,8 @@ $("saveGreetingBtn").addEventListener("click", async () => {
   try {
     await setDoc(doc(db, "galleries", currentGalleryId), {
       eventHeading: $("eventGreetingTitle").value.trim() || "Happy Wedding! ♡",
-      eventMessage: $("eventGreetingMessage").value.trim() || "“Two hearts, one beautiful journey, and a lifetime of memories to create.”",
+      eventMessage: $("eventGreetingMessage").value.trim(),
+      eventSubmessage: $("eventGreetingSubmessage").value.trim(),
       updatedAt: serverTimestamp()
     }, {merge: true});
     message("greetingStatus", "Greeting saved for this event!");
@@ -1098,8 +1102,10 @@ async function loadGuestGallery() {
     currentGalleryName = g.customerName || "FrameFolio";
     $("guestTitle").textContent = currentGalleryName + " — Photo Gallery";
     $("guestGreetingTitle").textContent = g.eventHeading || "Happy Wedding! ♡";
-    $("guestGreetingMessage").textContent = g.eventMessage || "“Two hearts, one beautiful journey, and a lifetime of memories to create.”";
-    $("guestGreetingSubmessage").textContent = g.eventSubmessage || "May your love grow stronger with every passing day. Wishing you a lifetime of happiness, laughter, and togetherness. ♡";
+    $("guestGreetingMessage").textContent = g.eventMessage || "";
+    $("guestGreetingSubmessage").textContent = g.eventSubmessage || "";
+    show("guestGreetingMessage", Boolean(g.eventMessage && g.eventMessage.trim()));
+    show("guestGreetingSubmessage", Boolean(g.eventSubmessage && g.eventSubmessage.trim()));
 
     if (g.ownerUid) {
       const ss = await getDoc(doc(db, "studios", g.ownerUid));
