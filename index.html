@@ -438,6 +438,7 @@ input,textarea{font-size:16px} /* stops phones zooming in when a field is tapped
     <div class="login-links">
       <button id="signupBtn" class="secondary">Create Photographer Account</button>
       <button id="forgotBtn" class="secondary">Forgot password?</button>
+      <button id="shareAppLoginBtn" class="secondary" type="button">Share App</button>
     </div>
     <div id="loginStatus" class="status" role="status"></div>
   </div>
@@ -473,6 +474,7 @@ input,textarea{font-size:16px} /* stops phones zooming in when a field is tapped
           <div class="quick-actions">
             <button type="button" class="gold" id="homeUploadBtn">+ Create Wedding Gallery</button>
             <button type="button" class="secondary" id="homeSettingsBtn">Edit Studio Settings</button>
+            <button type="button" class="secondary" id="shareAppBtn">Share FrameFolio App</button>
           </div>
         </div>
 
@@ -1324,6 +1326,30 @@ $("shareGalleryBtn").addEventListener("click", () => {
 $("guestShareBtn").addEventListener("click", () => {
   shareGallery(location.href, currentGalleryName);
 });
+
+/* Share the FrameFolio app itself with other photographers */
+async function shareApp() {
+  const link = baseUrl();
+  const title = "FrameFolio";
+  const text = "Create and share beautiful wedding photo galleries with FrameFolio:";
+  if (navigator.share) {
+    try {
+      await navigator.share({title, text, url: link});
+      return;
+    } catch(e) {
+      if (e && e.name === "AbortError") return;
+      console.warn(e);
+    }
+  }
+  window.open("https://wa.me/?text=" + encodeURIComponent(text + " " + link), "_blank", "noopener");
+  try {
+    await navigator.clipboard.writeText(link);
+    toast("App link copied. You can paste it anywhere.");
+  } catch {}
+}
+
+$("shareAppBtn").addEventListener("click", shareApp);
+$("shareAppLoginBtn").addEventListener("click", shareApp);
 
 function safeName(name) {
   return String(name || "photo.jpg").replace(/[\\/:*?"<>|]/g, "_").replace(/[\r\n]/g, "_");
