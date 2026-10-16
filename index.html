@@ -40,6 +40,8 @@ a{color:#6f553a;overflow-wrap:anywhere}
 .toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .studio-card{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
 .studio-logo{width:86px;height:86px;border-radius:50%;object-fit:cover}
+/* QR codes must remain square: never apply the circular studio-logo style */
+#qrImage{display:block;width:280px;height:280px;max-width:100%;object-fit:contain;border:10px solid #fff;border-radius:8px;background:#fff;image-rendering:pixelated}
 .wedding-note{text-align:center;padding:30px 18px;background:linear-gradient(135deg,#fff,#f5ede3);border:1px solid #e7e2da;border-radius:14px;margin:18px 0 24px}
 .wedding-note h2{font:600 35px 'Cormorant Garamond',Georgia;color:#6f553a}
 .wedding-note blockquote{font:600 23px/1.4 'Cormorant Garamond',Georgia;margin:8px auto;max-width:700px}
@@ -219,7 +221,9 @@ hr{border:0;border-top:1px solid #eee8df;margin:25px 0}
           <div id="qrArea" class="hidden">
             <hr>
             <h2>Wedding QR Code</h2>
-            <img id="qrImage" class="studio-logo" alt="Wedding QR code">
+            <div id="qrStatus" class="status" role="status"></div>
+            <img id="qrImage" alt="Wedding QR code">
+            <button id="downloadQrBtn" class="secondary" type="button">Download QR Code</button>
             <p><a id="guestLink" href="#" target="_blank" rel="noopener">Open guest gallery</a></p>
             <button id="openGuestBtn" class="secondary">Open Guest Gallery</button>
           </div>
@@ -762,15 +766,50 @@ async function openManageGallery(id, name) {
 }
 
 function showQr() {
-  if (!currentGalleryId) return;
-  const link = galleryUrl(currentGalleryId);
+  if (!currentGalleryId) {
+    alert("Please open a wedding gallery first.");
+    return;
+  }
+  // This exact URL is also used by the working Open Guest Gallery link.
+  const link = new URL(galleryUrl(currentGalleryId), location.href).href;
   $("guestLink").href = link;
   $("guestLink").textContent = link;
-  $("qrImage").src = "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=" + encodeURIComponent(link);
+  const qr = $("qrImage");
+  qr.alt = "QR code for " + (currentGalleryName || "wedding gallery");
+  qr.src = "https://api.qrserver.com/v1/create-qr-code/?size=600x600&format=png&ecc=H&margin=15&data=" + encodeURIComponent(link);
+  qr.onerror = () => message("qrStatus", "QR code could not load. Check your internet connection and try again.");
+  message("qrStatus", "Scan this square QR code with your phone camera.");
   show("qrArea", true);
 }
 
 $("shareQrBtn").addEventListener("click", showQr);
+
+$("downloadQrBtn").addEventListener("click", async () => {
+  const img = $("qrImage");
+  if (!img.src || !currentGalleryId) {
+    alert("Open the QR code first.");
+    return;
+  }
+  try {
+    const response = await fetch(img.src);
+    if (!response.ok) throw new Error("QR image unavailable");
+    const blob = await response.blob();
+    const objectUrl = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = objectUrl;
+    a.download = "FrameFolio-QR-" + safeFilename(currentGalleryName || currentGalleryId) + ".png";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(objectUrl), 3000);
+    message("qrStatus", "QR code download started.");
+  } catch (error) {
+    console.error(error);
+    // Fallback: open the QR image in a new tab so it can be saved manually.
+    window.open(img.src, "_blank", "noopener");
+    message("qrStatus", "QR image opened in a new tab. Save the image from there.");
+  }
+});
 
 $("copyLinkBtn").addEventListener("click", async () => {
   if (!currentGalleryId) return;
